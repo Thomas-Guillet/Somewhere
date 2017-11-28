@@ -12,48 +12,47 @@ import ReactDOM from 'react-dom';
 
 // registerServiceWorker();
 
-const FormattedDate = info => {
-  return <h2>It is {info.date.toLocaleTimeString()}.</h2>;
-}
+class Toggle extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {isToggleOn: true};
 
-class Clock extends React.Component{
-  constructor(info) {
-    super(info);
-    this.state = {date: new Date()};
+    // This binding is necessary to make `this` work in the callback
+    this.handleClick = this.handleClick.bind(this);
   }
-  componentDidMount() {
-    this.timerID = setInterval(
-      () => this.tick(),
-      1000
+
+  handleClick() {
+    this.setState(prevState => ({
+      isToggleOn: !prevState.isToggleOn
+    }));
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        {this.state.isToggleOn ? 'ON' : 'OFF'}
+      </button>
     );
   }
-  componentWillUnmount() {
-    clearInterval(this.timerID);
-  }
-  tick() {
-    this.setState({
-      date: new Date()
-    });
-  }
-  render(){
-    return(
-      <div>
-        <h1>Hello, world !</h1>
-        <FormattedDate date={this.state.date} />
-      </div>
-    )
-  }
 }
 
-const App = () => {
-  return (
-    <div>
-      <Clock />
-    </div>
-  );
+class LoggingButton extends React.Component {
+  // This syntax ensures `this` is bound within handleClick.
+  // Warning: this is *experimental* syntax.
+  handleClick = () => {
+    console.log('this is:', this);
+  }
+
+  render() {
+    return (
+      <button onClick={this.handleClick}>
+        Click me
+      </button>
+    );
+  }
 }
 
 ReactDOM.render(
-  <App />,
+  <LoggingButton />,
   document.getElementById('root')
 );
